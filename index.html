@@ -40,7 +40,6 @@
             background: white;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             padding: 15px 20px;
-            text-align: center;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -53,6 +52,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
         }
 
         .store-logo {
@@ -65,18 +65,132 @@
 
         header h1 {
             color: var(--primary-color);
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 900;
-            text-align: right;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: 20px auto;
             padding: 0 15px 40px 15px;
         }
 
-        /* لوحة التحكم السرية للمسؤول فقط */
+        .back-btn {
+            display: inline-block;
+            background: #f1f2f6;
+            color: #2f3542;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-bottom: 15px;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* شبكة المنتجات في الصفحة الرئيسية */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .grid-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .grid-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+        }
+
+        .grid-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .grid-info {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .grid-title {
+            font-size: 1.1rem;
+            color: #2f3542;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .grid-price {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .grid-btn {
+            background: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            border: none;
+            width: 100%;
+        }
+
+        /* صفحة تفاصيل المنتج */
+        .product-detail-view {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        .detail-img {
+            width: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .detail-title {
+            font-size: 1.6rem;
+            color: #2f3542;
+            margin-bottom: 10px;
+        }
+
+        .detail-price {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .detail-desc {
+            background: #fff9fa;
+            padding: 15px;
+            border-radius: 10px;
+            color: #57606f;
+            margin-bottom: 20px;
+            line-height: 1.8;
+            border-right: 4px solid var(--primary-color);
+        }
+
+        /* لوحة التحكم */
         .admin-panel {
             background: white;
             border-radius: 15px;
@@ -84,7 +198,7 @@
             margin-bottom: 25px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
             border: 2px dashed var(--primary-color);
-            display: none; /* مخفية تماماً عن الزبائن */
+            display: none;
         }
 
         .admin-panel.active {
@@ -97,59 +211,6 @@
             font-size: 1.1rem;
             border-bottom: 1px solid #eee;
             padding-bottom: 5px;
-        }
-
-        .product-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            margin-bottom: 25px;
-        }
-
-        .product-img {
-            width: 100%;
-            height: 380px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .product-info {
-            padding: 20px;
-        }
-
-        .product-title {
-            font-size: 1.4rem;
-            color: #2f3542;
-            margin-bottom: 8px;
-        }
-
-        .product-price {
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-
-        .product-desc {
-            color: #747d8c;
-            font-size: 0.95rem;
-            margin-bottom: 15px;
-        }
-
-        .order-form {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-        }
-
-        .form-title {
-            font-size: 1.2rem;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-            border-bottom: 2px solid #ffeaa7;
-            padding-bottom: 8px;
         }
 
         .form-group {
@@ -234,16 +295,15 @@
     </div>
 
     <header>
-        <div class="logo-area">
+        <div class="logo-area" onclick="showCatalog()">
             <img id="headerLogo" src="https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=200&q=80" alt="Logo" class="store-logo">
             <h1 id="headerTitle">Houri Hidaya kids</h1>
         </div>
-        <!-- تم إزالة الزر تماماً من هنا، لكي لا يراه الزبائن أبداً -->
     </header>
 
     <div class="container">
         
-        <!-- لوحة التحكم السرية (تظهر فقط إذا أضفت في الرابط كلمة سر أو كلمة admin) -->
+        <!-- لوحة التحكم الإدارية -->
         <div id="adminPanel" class="admin-panel">
             <h3 class="admin-title">🛠️ لوحة تحكم المسؤول الخاصة بك</h3>
             <div class="form-group">
@@ -258,11 +318,11 @@
             <h4 class="admin-title">إضافة منتج جديد</h4>
             <div class="form-group">
                 <label>اسم المنتج</label>
-                <input type="text" id="newTitle" placeholder="مثال: Basket Stitch Primark">
+                <input type="text" id="newTitle" placeholder="مثال: طقم Stitch & Angel للبنات">
             </div>
             <div class="form-group">
                 <label>السعر (دج)</label>
-                <input type="text" id="newPrice" placeholder="3500 دج">
+                <input type="text" id="newPrice" placeholder="3200 دج">
             </div>
             <div class="form-group">
                 <label>رابط صورة المنتج</label>
@@ -270,117 +330,123 @@
             </div>
             <div class="form-group">
                 <label>المقاسات (مفصولة بفاصلة)</label>
-                <input type="text" id="newSizes" value="20,21,22,23,24,25,26,27,28,29,30">
+                <input type="text" id="newSizes" value="2,4,6,8,10 سنوات">
             </div>
             <div class="form-group">
-                <label>وصف المنتج</label>
-                <textarea id="newDesc" rows="2">حذاء ستيتش الأصلي للأطفال بجودة عالية ومريحة للقدمين.</textarea>
+                <label>وصف المنتج التفصيلي</label>
+                <textarea id="newDesc" rows="3" placeholder="أدخل الوصف الكامل للمنتج هنا..."></textarea>
             </div>
             <button type="button" class="submit-btn" style="background:#2f3542; margin-bottom: 10px;" onclick="addNewProduct()">إضافة المنتج للمتجر ➕</button>
             <button type="button" class="action-btn" onclick="resetStoreProducts()">إعادة تعيين المنتجات الأصلية 🔄</button>
         </div>
 
-        <!-- عرض المنتجات للزبائن -->
-        <div id="productsList"></div>
+        <!-- الصفحة الرئيسية: كتالوج المنتجات -->
+        <div id="catalogView">
+            <h2 style="margin-bottom: 15px; color: #2f3542; font-size: 1.3rem;">منتجاتنا المميزة ✨</h2>
+            <div id="productsGrid" class="products-grid"></div>
+        </div>
 
-        <!-- استمارة الطلب -->
-        <div class="order-form">
-            <h3 class="form-title">إستمارة الطلب السريع 📝</h3>
-            <form id="orderForm">
-                <div class="form-group">
-                    <label>اختر المنتج *</label>
-                    <select id="selectedProduct" required></select>
-                </div>
+        <!-- صفحة تفاصيل المنتج + الاستمارة الخاصة به -->
+        <div id="productDetailView" class="product-detail-view">
+            <button class="back-btn" onclick="showCatalog()">⬅️ العودة لجميع المنتجات</button>
+            <img id="detailImg" src="" class="detail-img" alt="">
+            <h2 id="detailTitle" class="detail-title"></h2>
+            <div id="detailPrice" class="detail-price"></div>
+            <div id="detailDesc" class="detail-desc"></div>
+            <div id="adminDeleteContainer" style="margin-bottom: 15px;"></div>
 
-                <div class="form-group">
-                    <label>اختر المقاس *</label>
-                    <select id="selectedSize" required>
-                        <option value="">اختر المقاس أولاً...</option>
-                    </select>
-                </div>
+            <!-- استمارة طلب المنتج المحدد -->
+            <div style="margin-top: 25px; border-top: 2px dashed #ffeaa7; padding-top: 20px;">
+                <h3 style="color: var(--primary-color); margin-bottom: 15px;">إستمارة الطلب السريع 📝</h3>
+                <form id="orderForm">
+                    <div class="form-group">
+                        <label>اختر المقاس *</label>
+                        <select id="selectedSize" required></select>
+                    </div>
 
-                <div class="form-group">
-                    <label>الاسم الكامل *</label>
-                    <input type="text" id="name" placeholder="أدخل اسمك الكامل" required>
-                </div>
+                    <div class="form-group">
+                        <label>الاسم الكامل *</label>
+                        <input type="text" id="name" placeholder="أدخل اسمك الكامل" required>
+                    </div>
 
-                <div class="form-group">
-                    <label>رقم الهاتف *</label>
-                    <input type="tel" id="phone" placeholder="مثال: 0781341122" required>
-                </div>
+                    <div class="form-group">
+                        <label>رقم الهاتف *</label>
+                        <input type="tel" id="phone" placeholder="مثال: 0781341122" required>
+                    </div>
 
-                <div class="form-group">
-                    <label>الولاية *</label>
-                    <select id="wilaya" required>
-                        <option value="">اختر الولاية...</option>
-                        <option value="01 أدرار">01 - أدرار</option>
-                        <option value="02 الشلف">02 - الشلف</option>
-                        <option value="03 الأغواط">03 - الأغواط</option>
-                        <option value="04 أم البواقي">04 - أم البواقي</option>
-                        <option value="05 باتنة">05 - باتنة</option>
-                        <option value="06 بجاية">06 - بجاية</option>
-                        <option value="07 بسكرة">07 - بسكرة</option>
-                        <option value="08 بشار">08 - بشار</option>
-                        <option value="09 البليدة">09 - البليدة</option>
-                        <option value="10 البويرة">10 - البويرة</option>
-                        <option value="11 تبسة">11 - تبسة</option>
-                        <option value="12 تلمسان">12 - تلمسان</option>
-                        <option value="13 تيارت">13 - تيارت</option>
-                        <option value="14 تيزي وزو">14 - تيزي وزو</option>
-                        <option value="15 الجزائر">15 - الجزائر</option>
-                        <option value="16 الجلفة">16 - الجلفة</option>
-                        <option value="17 جيجل">17 - جيجل</option>
-                        <option value="18 سطيف">18 - سطيف</option>
-                        <option value="19 سعيدة">19 - سعيدة</option>
-                        <option value="20 سكيكدة">20 - سكيكدة</option>
-                        <option value="21 سيدي بلعباس">21 - سيدي بلعباس</option>
-                        <option value="22 عنابة">22 - عنابة</option>
-                        <option value="23 قالمة">23 - قالمة</option>
-                        <option value="24 قسنطينة">24 - قسنطينة</option>
-                        <option value="25 المدية">25 - المدية</option>
-                        <option value="26 مستغانم">26 - مستغانم</option>
-                        <option value="27 المسيلة">27 - المسيلة</option>
-                        <option value="28 معسكر">28 - معسكر</option>
-                        <option value="29 ورقلة">29 - ورقلة</option>
-                        <option value="30 وهران">30 - وهران</option>
-                        <option value="31 البيض">31 - البيض</option>
-                        <option value="32 إليزي">32 - إليزي</option>
-                        <option value="33 برج بوعريريج">33 - برج بوعريريج</option>
-                        <option value="34 بومرداس">34 - بومرداس</option>
-                        <option value="35 الطارف">35 - الطارف</option>
-                        <option value="36 تندوف">36 - تندوف</option>
-                        <option value="37 تيسمسيلت">37 - تيسمسيلت</option>
-                        <option value="38 الوادي">38 - الوادي</option>
-                        <option value="39 خنشلة">39 - خنشلة</option>
-                        <option value="40 سوق أهراس">40 - سوق أهراس</option>
-                        <option value="41 تيبازة">41 - تيبازة</option>
-                        <option value="42 ميلة">42 - ميلة</option>
-                        <option value="43 عين الدفلى">43 - عين الدفلى</option>
-                        <option value="44 النعامة">44 - النعامة</option>
-                        <option value="45 عين تموشنت">45 - عين تموشنت</option>
-                        <option value="46 غرداية">46 - غرداية</option>
-                        <option value="47 غليزان">47 - غليزان</option>
-                        <option value="48 تقرت">48 - تقرت</option>
-                        <option value="49 جانت">49 - جانت</option>
-                        <option value="50 المغير">50 - المغير</option>
-                        <option value="51 المنيعة">51 - المنيعة</option>
-                        <option value="52 أولاد جلال">52 - أولاد جلال</option>
-                        <option value="53 برج باجي مختار">53 - برج باجي مختار</option>
-                        <option value="54 بني عباس">54 - بني عباس</option>
-                        <option value="55 إن صالح">55 - إن صالح</option>
-                        <option value="56 إن قزام">56 - إن قزام</option>
-                        <option value="57 توقرت">57 - توقرت</option>
-                        <option value="58 الدبداب">58 - جانت/إليزي</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label>الولاية *</label>
+                        <select id="wilaya" required>
+                            <option value="">اختر الولاية...</option>
+                            <option value="01 أدرار">01 - أدرار</option>
+                            <option value="02 الشلف">02 - الشلف</option>
+                            <option value="03 الأغواط">03 - الأغواط</option>
+                            <option value="04 أم البواقي">04 - أم البواقي</option>
+                            <option value="05 باتنة">05 - باتنة</option>
+                            <option value="06 بجاية">06 - بجاية</option>
+                            <option value="07 بسكرة">07 - بسكرة</option>
+                            <option value="08 بشار">08 - بشار</option>
+                            <option value="09 البليدة">09 - البليدة</option>
+                            <option value="10 البويرة">10 - البويرة</option>
+                            <option value="11 تبسة">11 - تبسة</option>
+                            <option value="12 تلمسان">12 - تلمسان</option>
+                            <option value="13 تيارت">13 - تيارت</option>
+                            <option value="14 تيزي وزو">14 - تيزي وزو</option>
+                            <option value="15 الجزائر">15 - الجزائر</option>
+                            <option value="16 الجلفة">16 - الجلفة</option>
+                            <option value="17 جيجل">17 - جيجل</option>
+                            <option value="18 سطيف">18 - سطيف</option>
+                            <option value="19 سعيدة">19 - سعيدة</option>
+                            <option value="20 سكيكدة">20 - سكيكدة</option>
+                            <option value="21 سيدي بلعباس">21 - سيدي بلعباس</option>
+                            <option value="22 عنابة">22 - عنابة</option>
+                            <option value="23 قالمة">23 - قالمة</option>
+                            <option value="24 قسنطينة">24 - قسنطينة</option>
+                            <option value="25 المدية">25 - المدية</option>
+                            <option value="26 مستغانم">26 - مستغانم</option>
+                            <option value="27 المسيلة">27 - المسيلة</option>
+                            <option value="28 معسكر">28 - معسكر</option>
+                            <option value="29 ورقلة">29 - ورقلة</option>
+                            <option value="30 وهران">30 - وهران</option>
+                            <option value="31 البيض">31 - البيض</option>
+                            <option value="32 إليزي">32 - إليزي</option>
+                            <option value="33 برج بوعريريج">33 - برج بوعريريج</option>
+                            <option value="34 بومرداس">34 - بومرداس</option>
+                            <option value="35 الطارف">35 - الطارف</option>
+                            <option value="36 تندوف">36 - تندوف</option>
+                            <option value="37 تيسمسيلت">37 - تيسمسيلت</option>
+                            <option value="38 الوادي">38 - الوادي</option>
+                            <option value="39 خنشلة">39 - خنشلة</option>
+                            <option value="40 سوق أهراس">40 - سوق أهراس</option>
+                            <option value="41 تيبازة">41 - تيبازة</option>
+                            <option value="42 ميلة">42 - ميلة</option>
+                            <option value="43 عين الدفلى">43 - عين الدفلى</option>
+                            <option value="44 النعامة">44 - النعامة</option>
+                            <option value="45 عين تموشنت">45 - عين تموشنت</option>
+                            <option value="46 غرداية">46 - غرداية</option>
+                            <option value="47 غليزان">47 - غليزان</option>
+                            <option value="48 تقرت">48 - تقرت</option>
+                            <option value="49 جانت">49 - جانت</option>
+                            <option value="50 المغير">50 - المغير</option>
+                            <option value="51 المنيعة">51 - المنيعة</option>
+                            <option value="52 أولاد جلال">52 - أولاد جلال</option>
+                            <option value="53 برج باجي مختار">53 - برج باجي مختار</option>
+                            <option value="54 بني عباس">54 - بني عباس</option>
+                            <option value="55 إن صالح">55 - إن صالح</option>
+                            <option value="56 إن قزام">56 - إن قزام</option>
+                            <option value="57 توقرت">57 - توقرت</option>
+                            <option value="58 الدبداب">58 - جانت/إليزي</option>
+                        </select>
+                    </div>
 
-                <div class="form-group">
-                    <label>عنوان البلدية / الشارع *</label>
-                    <input type="text" id="address" placeholder="أدخل العنوان التفصيلي للتوصيل" required>
-                </div>
+                    <div class="form-group">
+                        <label>عنوان البلدية / الشارع *</label>
+                        <input type="text" id="address" placeholder="أدخل العنوان التفصيلي للتوصيل" required>
+                    </div>
 
-                <button type="submit" class="submit-btn">تأكيد الطلب عبر واتساب 🛒</button>
-            </form>
+                    <button type="submit" class="submit-btn">تأكيد الطلب عبر واتساب 🛒</button>
+                </form>
+            </div>
         </div>
 
         <!-- روابط التواصل الاجتماعي -->
@@ -398,7 +464,12 @@
     </footer>
 
     <script>
-        // البيانات الافتراضية
+        const DATA_VERSION = "v3_multi_product_view";
+        if (localStorage.getItem("store_v") !== DATA_VERSION) {
+            localStorage.removeItem("houri_store_data");
+            localStorage.setItem("store_v", DATA_VERSION);
+        }
+
         let storeData = JSON.parse(localStorage.getItem('houri_store_data')) || {
             storeName: "Houri Hidaya kids",
             logoUrl: "https://i.postimg.cc/DzMMwF01/706691313-122104797057317972-8513449636848536880-n.jpg",
@@ -414,17 +485,19 @@
             ]
         };
 
+        let currentActiveProduct = null;
+
         function saveData() {
             localStorage.setItem('houri_store_data', JSON.stringify(storeData));
             renderStore();
         }
 
-        // فحص ما إذا كان الشخص الذي يفتح الموقع هو أنت (المسؤول) عبر رابط سري
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             if(urlParams.get('admin') === 'true') {
                 document.getElementById('adminPanel').classList.add('active');
             }
+            renderStore();
         });
 
         function renderStore() {
@@ -433,33 +506,64 @@
             document.getElementById('adminStoreName').value = storeData.storeName;
             document.getElementById('adminLogoInput').value = storeData.logoUrl;
 
-            const container = document.getElementById('productsList');
-            const selectProduct = document.getElementById('selectedProduct');
-            
-            container.innerHTML = '';
-            selectProduct.innerHTML = '<option value="">اختر المنتج...</option>';
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const isAdmin = urlParams.get('admin') === 'true';
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
 
             storeData.products.forEach((p, index) => {
-                let deleteBtnHTML = isAdmin ? `<button class="action-btn" onclick="deleteProduct(${index})">حذف المنتج 🗑️</button>` : '';
-
-                container.innerHTML += `
-                    <div class="product-card">
-                        <img src="${p.image}" alt="${p.title}" class="product-img">
-                        <div class="product-info">
-                            <h3 class="product-title">${p.title}</h3>
-                            <div class="product-price">${p.price}</div>
-                            <p class="product-desc">${p.desc}</p>
-                            <p style="font-size:0.85rem; color:#0984e3; margin-bottom:10px;"><b>المقاسات المتاحة:</b> ${p.sizes}</p>
-                            ${deleteBtnHTML}
+                grid.innerHTML += `
+                    <div class="grid-card" onclick="openProductDetail(${p.id})">
+                        <img src="${p.image}" alt="${p.title}" class="grid-img">
+                        <div class="grid-info">
+                            <div>
+                                <div class="grid-title">${p.title}</div>
+                                <div class="grid-price">${p.price}</div>
+                            </div>
+                            <button class="grid-btn">عرض التفاصيل والطلب 🛒</button>
                         </div>
                     </div>
                 `;
-
-                selectProduct.innerHTML += `<option value="${p.title} - ${p.price}">${p.title} (${p.price})</option>`;
             });
+        }
+
+        function showCatalog() {
+            document.getElementById('catalogView').style.display = 'block';
+            document.getElementById('productDetailView').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openProductDetail(productId) {
+            const product = storeData.products.find(p => p.id === productId);
+            if(!product) return;
+
+            currentActiveProduct = product;
+
+            document.getElementById('detailImg').src = product.image;
+            document.getElementById('detailTitle').innerText = product.title;
+            document.getElementById('detailPrice').innerText = product.price;
+            document.getElementById('detailDesc').innerText = product.desc;
+
+            // تحديد المقاسات
+            const sizeSelect = document.getElementById('selectedSize');
+            sizeSelect.innerHTML = '<option value="">اختر المقاس...</option>';
+            const sizesArray = product.sizes.split(',');
+            sizesArray.forEach(s => {
+                sizeSelect.innerHTML += `<option value="مقاس ${s.trim()}">مقاس ${s.trim()}</option>`;
+            });
+
+            // خيار الحذف للمسؤول
+            const urlParams = new URLSearchParams(window.location.search);
+            const isAdmin = urlParams.get('admin') === 'true';
+            const adminContainer = document.getElementById('adminDeleteContainer');
+            if(isAdmin) {
+                const prodIndex = storeData.products.findIndex(p => p.id === productId);
+                adminContainer.innerHTML = `<button class="action-btn" onclick="deleteProduct(${prodIndex})">حذف هذا المنتج 🗑️</button>`;
+            } else {
+                adminContainer.innerHTML = '';
+            }
+
+            document.getElementById('catalogView').style.display = 'none';
+            document.getElementById('productDetailView').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         document.getElementById('adminStoreName').addEventListener('input', function(e) {
@@ -490,41 +594,31 @@
             document.getElementById('newTitle').value = '';
             document.getElementById('newPrice').value = '';
             document.getElementById('newImage').value = '';
-            alert('تمت إضافة المنتج بنجاح إلى المتجر!');
+            document.getElementById('newDesc').value = '';
+            alert('تمت إضافة المنتج بنجاح إلى المعرض!');
+            showCatalog();
         }
 
         function deleteProduct(index) {
             if(confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
                 storeData.products.splice(index, 1);
                 saveData();
+                showCatalog();
             }
         }
 
         function resetStoreProducts() {
-            if(confirm('إعادة تعيين المنتجات الأصلية؟')) {
+            if(confirm('إعادة تعيين كافة المنتجات؟')) {
                 localStorage.removeItem('houri_store_data');
                 location.reload();
             }
         }
 
-        document.getElementById('selectedProduct').addEventListener('change', function() {
-            const selectedTitle = this.value.split(' - ')[0];
-            const product = storeData.products.find(p => p.title === selectedTitle);
-            const sizeSelect = document.getElementById('selectedSize');
-            
-            sizeSelect.innerHTML = '<option value="">اختر المقاس...</option>';
-            if(product) {
-                const sizesArray = product.sizes.split(',');
-                sizesArray.forEach(s => {
-                    sizeSelect.innerHTML += `<option value="مقاس ${s.trim()}">مقاس ${s.trim()}</option>`;
-                });
-            }
-        });
-
+        // إرسال الطلب عبر الواتساب
         document.getElementById('orderForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            if(!currentActiveProduct) return;
             
-            const product = document.getElementById('selectedProduct').value;
             const size = document.getElementById('selectedSize').value;
             const name = document.getElementById('name').value;
             const phone = document.getElementById('phone').value;
@@ -534,7 +628,7 @@
             const whatsappNumber = "213781341122";
             
             const message = `مرحباً، أريد طلب منتج من Houri Hidaya kids:\n\n` +
-                            `- المنتج: ${product}\n` +
+                            `- المنتج: ${currentActiveProduct.title} (${currentActiveProduct.price})\n` +
                             `- المقاس: ${size}\n\n` +
                             `معلومات التوصيل:\n` +
                             `- الاسم: ${name}\n` +
@@ -545,8 +639,6 @@
             const encodedMessage = encodeURIComponent(message);
             window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
         });
-
-        renderStore();
     </script>
 </body>
 </html>
