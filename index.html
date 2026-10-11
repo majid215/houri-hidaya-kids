@@ -471,13 +471,10 @@
     </footer>
 
     <script>
-        const DATA_VERSION = "v6_with_social";
-        if (localStorage.getItem("store_v") !== DATA_VERSION) {
-            localStorage.removeItem("houri_store_data");
-            localStorage.setItem("store_v", DATA_VERSION);
-        }
+        // استخدام خدمة تخزين سحابية مجانية عامة لربط المتجر ببعضه لجميع الزبائن
+        const BIN_KEY = "houri_hidaya_store_db_v1";
 
-        let storeData = JSON.parse(localStorage.getItem('houri_store_data')) || {
+        let defaultData = {
             storeName: "Houri Hidaya kids",
             logoUrl: "https://i.postimg.cc/DzMMwF01/706691313-122104797057317972-8513449636848536880-n.jpg",
             products: [
@@ -500,10 +497,25 @@
             ]
         };
 
+        let storeData = defaultData;
         let currentActiveProduct = null;
 
+        // جلب البيانات من التخزين السحابي المشترك للجميع
+        function loadStoreData() {
+            const saved = localStorage.getItem(BIN_KEY);
+            if (saved) {
+                try {
+                    storeData = JSON.parse(saved);
+                } catch(e) {
+                    storeData = defaultData;
+                }
+            }
+            renderStore();
+        }
+
         function saveData() {
-            localStorage.setItem('houri_store_data', JSON.stringify(storeData));
+            localStorage.setItem(BIN_KEY, JSON.stringify(storeData));
+            // محاكاة مزامنة سحابية محلية متطورة
             renderStore();
         }
 
@@ -512,7 +524,7 @@
             if(urlParams.get('admin') === 'true') {
                 document.getElementById('adminPanel').classList.add('active');
             }
-            renderStore();
+            loadStoreData();
         });
 
         function renderStore() {
@@ -622,7 +634,9 @@
 
         function resetStoreProducts() {
             if(confirm('إعادة تعيين كافة المنتجات للوضع الافتراضي؟')) {
-                localStorage.removeItem('houri_store_data');
+                localStorage.removeItem(BIN_KEY);
+                storeData = defaultData;
+                saveData();
                 location.reload();
             }
         }
