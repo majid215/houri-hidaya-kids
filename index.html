@@ -70,24 +70,13 @@
             text-align: right;
         }
 
-        .admin-toggle-btn {
-            background: #f1f2f6;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.85rem;
-            color: #57606f;
-        }
-
         .container {
             max-width: 600px;
             margin: 20px auto;
             padding: 0 15px 40px 15px;
         }
 
-        /* لوحة التحكم */
+        /* لوحة التحكم السرية للمسؤول فقط */
         .admin-panel {
             background: white;
             border-radius: 15px;
@@ -95,7 +84,7 @@
             margin-bottom: 25px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
             border: 2px dashed var(--primary-color);
-            display: none;
+            display: none; /* مخفية تماماً عن الزبائن */
         }
 
         .admin-panel.active {
@@ -249,14 +238,14 @@
             <img id="headerLogo" src="https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=200&q=80" alt="Logo" class="store-logo">
             <h1 id="headerTitle">Houri Hidaya kids</h1>
         </div>
-        <button class="admin-toggle-btn" onclick="toggleAdminPanel()">لوحة التحكم ⚙️</button>
+        <!-- تم إزالة الزر تماماً من هنا، لكي لا يراه الزبائن أبداً -->
     </header>
 
     <div class="container">
         
-        <!-- لوحة التحكم الإدارية لإضافة المنتجات وتعديل اللوجو -->
+        <!-- لوحة التحكم السرية (تظهر فقط إذا أضفت في الرابط كلمة سر أو كلمة admin) -->
         <div id="adminPanel" class="admin-panel">
-            <h3 class="admin-title">🛠️ لوحة تحكم المتجر</h3>
+            <h3 class="admin-title">🛠️ لوحة تحكم المسؤول الخاصة بك</h3>
             <div class="form-group">
                 <label>رابط اللوجو (صورة الشعار)</label>
                 <input type="text" id="adminLogoInput" placeholder="أدخل رابط صورة الشعار">
@@ -291,7 +280,7 @@
             <button type="button" class="action-btn" onclick="resetStoreProducts()">إعادة تعيين المنتجات الأصلية 🔄</button>
         </div>
 
-        <!-- عرض المنتجات -->
+        <!-- عرض المنتجات للزبائن -->
         <div id="productsList"></div>
 
         <!-- استمارة الطلب -->
@@ -430,10 +419,13 @@
             renderStore();
         }
 
-        function toggleAdminPanel() {
-            const panel = document.getElementById('adminPanel');
-            panel.classList.toggle('active');
-        }
+        // فحص ما إذا كان الشخص الذي يفتح الموقع هو أنت (المسؤول) عبر رابط سري
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if(urlParams.get('admin') === 'true') {
+                document.getElementById('adminPanel').classList.add('active');
+            }
+        });
 
         function renderStore() {
             document.getElementById('headerTitle').innerText = storeData.storeName;
@@ -447,7 +439,12 @@
             container.innerHTML = '';
             selectProduct.innerHTML = '<option value="">اختر المنتج...</option>';
 
+            const urlParams = new URLSearchParams(window.location.search);
+            const isAdmin = urlParams.get('admin') === 'true';
+
             storeData.products.forEach((p, index) => {
+                let deleteBtnHTML = isAdmin ? `<button class="action-btn" onclick="deleteProduct(${index})">حذف المنتج 🗑️</button>` : '';
+
                 container.innerHTML += `
                     <div class="product-card">
                         <img src="${p.image}" alt="${p.title}" class="product-img">
@@ -456,7 +453,7 @@
                             <div class="product-price">${p.price}</div>
                             <p class="product-desc">${p.desc}</p>
                             <p style="font-size:0.85rem; color:#0984e3; margin-bottom:10px;"><b>المقاسات المتاحة:</b> ${p.sizes}</p>
-                            <button class="action-btn" onclick="deleteProduct(${index})">حذف المنتج 🗑️</button>
+                            ${deleteBtnHTML}
                         </div>
                     </div>
                 `;
@@ -490,11 +487,10 @@
             storeData.products.push({ id: Date.now(), title, price, image, sizes, desc });
             saveData();
 
-            // تنظيف الحقول
             document.getElementById('newTitle').value = '';
             document.getElementById('newPrice').value = '';
             document.getElementById('newImage').value = '';
-            alert('تمت إضافة المنتج بنجاح!');
+            alert('تمت إضافة المنتج بنجاح إلى المتجر!');
         }
 
         function deleteProduct(index) {
@@ -505,13 +501,12 @@
         }
 
         function resetStoreProducts() {
-            if(confirm('إعادة تعيين المتجر؟')) {
+            if(confirm('إعادة تعيين المنتجات الأصلية؟')) {
                 localStorage.removeItem('houri_store_data');
                 location.reload();
             }
         }
 
-        // تحديث المقاسات حسب المنتج المختار
         document.getElementById('selectedProduct').addEventListener('change', function() {
             const selectedTitle = this.value.split(' - ')[0];
             const product = storeData.products.find(p => p.title === selectedTitle);
@@ -526,7 +521,6 @@
             }
         });
 
-        // إرسال الطلب عبر الواتساب
         document.getElementById('orderForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
