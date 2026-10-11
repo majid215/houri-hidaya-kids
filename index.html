@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Houri Hidaya kids - عالم أنيقة وفرحة الأطفال</title>
+    <title>Houri Hidaya kids - متجر الأطفال</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -44,23 +44,70 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .store-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
         }
 
         header h1 {
             color: var(--primary-color);
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 900;
+            text-align: right;
         }
 
-        header p {
-            color: #747d8c;
-            font-size: 0.9rem;
+        .admin-toggle-btn {
+            background: #f1f2f6;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: #57606f;
         }
 
         .container {
-            max-width: 650px;
+            max-width: 600px;
             margin: 20px auto;
             padding: 0 15px 40px 15px;
+        }
+
+        /* لوحة التحكم */
+        .admin-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border: 2px dashed var(--primary-color);
+            display: none;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-title {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
         }
 
         .product-card {
@@ -106,7 +153,6 @@
             border-radius: 20px;
             padding: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            margin-top: 30px;
         }
 
         .form-title {
@@ -128,7 +174,7 @@
             color: #2f3542;
         }
 
-        .form-group input, .form-group select {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
             padding: 12px;
             border: 2px solid #eccc68;
@@ -148,6 +194,17 @@
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(46, 213, 115, 0.4);
+        }
+
+        .action-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 5px;
         }
 
         .social-links {
@@ -188,32 +245,68 @@
     </div>
 
     <header>
-        <h1>Houri Hidaya kids 👶✨</h1>
-        <p>عالم أنيقة وفرحة الأطفال</p>
+        <div class="logo-area">
+            <img id="headerLogo" src="https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=200&q=80" alt="Logo" class="store-logo">
+            <h1 id="headerTitle">Houri Hidaya kids</h1>
+        </div>
+        <button class="admin-toggle-btn" onclick="toggleAdminPanel()">لوحة التحكم ⚙️</button>
     </header>
 
     <div class="container">
         
-        <!-- مكان عرض المنتجات التي يتم جلبها تلقائياً من Google Sheets -->
-        <div id="products-container">
-            <p style="text-align:center; padding: 20px;">جاري تحميل المنتجات...</p>
+        <!-- لوحة التحكم الإدارية لإضافة المنتجات وتعديل اللوجو -->
+        <div id="adminPanel" class="admin-panel">
+            <h3 class="admin-title">🛠️ لوحة تحكم المتجر</h3>
+            <div class="form-group">
+                <label>رابط اللوجو (صورة الشعار)</label>
+                <input type="text" id="adminLogoInput" placeholder="أدخل رابط صورة الشعار">
+            </div>
+            <div class="form-group">
+                <label>اسم المتجر</label>
+                <input type="text" id="adminStoreName" value="Houri Hidaya kids">
+            </div>
+            <hr style="margin: 15px 0; border:0; border-top:1px solid #eee;">
+            <h4 class="admin-title">إضافة منتج جديد</h4>
+            <div class="form-group">
+                <label>اسم المنتج</label>
+                <input type="text" id="newTitle" placeholder="مثال: Basket Stitch Primark">
+            </div>
+            <div class="form-group">
+                <label>السعر (دج)</label>
+                <input type="text" id="newPrice" placeholder="3500 دج">
+            </div>
+            <div class="form-group">
+                <label>رابط صورة المنتج</label>
+                <input type="text" id="newImage" placeholder="رابط صورة المنتج المباشر">
+            </div>
+            <div class="form-group">
+                <label>المقاسات (مفصولة بفاصلة)</label>
+                <input type="text" id="newSizes" value="20,21,22,23,24,25,26,27,28,29,30">
+            </div>
+            <div class="form-group">
+                <label>وصف المنتج</label>
+                <textarea id="newDesc" rows="2">حذاء ستيتش الأصلي للأطفال بجودة عالية ومريحة للقدمين.</textarea>
+            </div>
+            <button type="button" class="submit-btn" style="background:#2f3542; margin-bottom: 10px;" onclick="addNewProduct()">إضافة المنتج للمتجر ➕</button>
+            <button type="button" class="action-btn" onclick="resetStoreProducts()">إعادة تعيين المنتجات الأصلية 🔄</button>
         </div>
 
-        <!-- استمارة الطلب السريع -->
+        <!-- عرض المنتجات -->
+        <div id="productsList"></div>
+
+        <!-- استمارة الطلب -->
         <div class="order-form">
             <h3 class="form-title">إستمارة الطلب السريع 📝</h3>
             <form id="orderForm">
                 <div class="form-group">
-                    <label>المنتج المطلوب *</label>
-                    <select id="productSelect" required>
-                        <option value="">اختر المنتج...</option>
-                    </select>
+                    <label>اختر المنتج *</label>
+                    <select id="selectedProduct" required></select>
                 </div>
 
                 <div class="form-group">
-                    <label>المقاس المطلوب *</label>
-                    <select id="sizeSelect" required>
-                        <option value="">اختر المقاس...</option>
+                    <label>اختر المقاس *</label>
+                    <select id="selectedSize" required>
+                        <option value="">اختر المقاس أولاً...</option>
                     </select>
                 </div>
 
@@ -316,48 +409,129 @@
     </footer>
 
     <script>
-        // رابط تجريبي للجدول المنتجات
-        const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ_EXAMPLE/pub?output=csv';
-
-        // خيارات الافتراضية
-        const defaultProduct = {
-            title: "Basket Stitch Primark",
-            price: "3500 دج",
-            image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=800&q=80",
-            sizes: ["20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"],
-            desc: "حذاء ستيتش الأصلي للأطفال بجودة عالية ومريحة للقدمين."
+        // البيانات الافتراضية
+        let storeData = JSON.parse(localStorage.getItem('houri_store_data')) || {
+            storeName: "Houri Hidaya kids",
+            logoUrl: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=200&q=80",
+            products: [
+                {
+                    id: 1,
+                    title: "Basket Stitch Primark",
+                    price: "3500 دج",
+                    image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=800&q=80",
+                    sizes: "20,21,22,23,24,25,26,27,28,29,30",
+                    desc: "حذاء ستيتش الأصلي للأطفال بجودة عالية ومريحة للقدمين."
+                }
+            ]
         };
 
-        function renderDefault() {
-            const container = document.getElementById('products-container');
-            container.innerHTML = `
-                <div class="product-card">
-                    <img src="${defaultProduct.image}" alt="${defaultProduct.title}" class="product-img">
-                    <div class="product-info">
-                        <h3 class="product-title">${defaultProduct.title}</h3>
-                        <div class="product-price">${defaultProduct.price}</div>
-                        <p class="product-desc">${defaultProduct.desc}</p>
+        function saveData() {
+            localStorage.setItem('houri_store_data', JSON.stringify(storeData));
+            renderStore();
+        }
+
+        function toggleAdminPanel() {
+            const panel = document.getElementById('adminPanel');
+            panel.classList.toggle('active');
+        }
+
+        function renderStore() {
+            document.getElementById('headerTitle').innerText = storeData.storeName;
+            document.getElementById('headerLogo').src = storeData.logoUrl;
+            document.getElementById('adminStoreName').value = storeData.storeName;
+            document.getElementById('adminLogoInput').value = storeData.logoUrl;
+
+            const container = document.getElementById('productsList');
+            const selectProduct = document.getElementById('selectedProduct');
+            
+            container.innerHTML = '';
+            selectProduct.innerHTML = '<option value="">اختر المنتج...</option>';
+
+            storeData.products.forEach((p, index) => {
+                container.innerHTML += `
+                    <div class="product-card">
+                        <img src="${p.image}" alt="${p.title}" class="product-img">
+                        <div class="product-info">
+                            <h3 class="product-title">${p.title}</h3>
+                            <div class="product-price">${p.price}</div>
+                            <p class="product-desc">${p.desc}</p>
+                            <p style="font-size:0.85rem; color:#0984e3; margin-bottom:10px;"><b>المقاسات المتاحة:</b> ${p.sizes}</p>
+                            <button class="action-btn" onclick="deleteProduct(${index})">حذف المنتج 🗑️</button>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
 
-            const prodSelect = document.getElementById('productSelect');
-            prodSelect.innerHTML = `<option value="${defaultProduct.title}">${defaultProduct.title} (${defaultProduct.price})</option>`;
-
-            const sizeSelect = document.getElementById('sizeSelect');
-            sizeSelect.innerHTML = '<option value="">اختر المقاس...</option>';
-            defaultProduct.sizes.forEach(s => {
-                sizeSelect.innerHTML += `<option value="مقاس ${s}">مقاس ${s}</option>`;
+                selectProduct.innerHTML += `<option value="${p.title} - ${p.price}">${p.title} (${p.price})</option>`;
             });
         }
 
-        renderDefault();
+        document.getElementById('adminStoreName').addEventListener('input', function(e) {
+            storeData.storeName = e.target.value;
+            saveData();
+        });
 
+        document.getElementById('adminLogoInput').addEventListener('input', function(e) {
+            storeData.logoUrl = e.target.value;
+            saveData();
+        });
+
+        function addNewProduct() {
+            const title = document.getElementById('newTitle').value;
+            const price = document.getElementById('newPrice').value;
+            const image = document.getElementById('newImage').value;
+            const sizes = document.getElementById('newSizes').value;
+            const desc = document.getElementById('newDesc').value;
+
+            if(!title || !price || !image) {
+                alert('الرجاء تعبئة اسم المنتج، السعر، ورابط الصورة على الأقل!');
+                return;
+            }
+
+            storeData.products.push({ id: Date.now(), title, price, image, sizes, desc });
+            saveData();
+
+            // تنظيف الحقول
+            document.getElementById('newTitle').value = '';
+            document.getElementById('newPrice').value = '';
+            document.getElementById('newImage').value = '';
+            alert('تمت إضافة المنتج بنجاح!');
+        }
+
+        function deleteProduct(index) {
+            if(confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
+                storeData.products.splice(index, 1);
+                saveData();
+            }
+        }
+
+        function resetStoreProducts() {
+            if(confirm('إعادة تعيين المتجر؟')) {
+                localStorage.removeItem('houri_store_data');
+                location.reload();
+            }
+        }
+
+        // تحديث المقاسات حسب المنتج المختار
+        document.getElementById('selectedProduct').addEventListener('change', function() {
+            const selectedTitle = this.value.split(' - ')[0];
+            const product = storeData.products.find(p => p.title === selectedTitle);
+            const sizeSelect = document.getElementById('selectedSize');
+            
+            sizeSelect.innerHTML = '<option value="">اختر المقاس...</option>';
+            if(product) {
+                const sizesArray = product.sizes.split(',');
+                sizesArray.forEach(s => {
+                    sizeSelect.innerHTML += `<option value="مقاس ${s.trim()}">مقاس ${s.trim()}</option>`;
+                });
+            }
+        });
+
+        // إرسال الطلب عبر الواتساب
         document.getElementById('orderForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const product = document.getElementById('productSelect').value;
-            const size = document.getElementById('sizeSelect').value;
+            const product = document.getElementById('selectedProduct').value;
+            const size = document.getElementById('selectedSize').value;
             const name = document.getElementById('name').value;
             const phone = document.getElementById('phone').value;
             const wilaya = document.getElementById('wilaya').value;
@@ -377,6 +551,8 @@
             const encodedMessage = encodeURIComponent(message);
             window.open(`https://wa.me/${whatsappNumber}?text=${encodedMessage}`, '_blank');
         });
+
+        renderStore();
     </script>
 </body>
 </html>
