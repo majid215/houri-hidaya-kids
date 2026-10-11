@@ -257,7 +257,7 @@
             margin-top: 5px;
         }
 
-        /* روابط مواقع التواصل الاجتماعي */
+        /* روابط التواصل الاجتماعي */
         .social-links {
             text-align: center;
             margin-top: 35px;
@@ -304,7 +304,7 @@
 
     <header>
         <div class="logo-area" onclick="showCatalog()">
-            <img id="headerLogo" src="https://i.postimg.cc/DzMMwF01/706691313-122104797057317972-8513449636848536880-n.jpg" alt="Logo" class="store-logo">
+            <img id="headerLogo" src="https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=200&q=80" alt="Logo" class="store-logo">
             <h1 id="headerTitle">Houri Hidaya kids</h1>
         </div>
     </header>
@@ -344,8 +344,8 @@
                 <label>وصف المنتج التفصيلي</label>
                 <textarea id="newDesc" rows="3" placeholder="أدخل الوصف الكامل للمنتج هنا..."></textarea>
             </div>
-            <button type="button" class="submit-btn" style="background:#2f3542; margin-bottom: 10px;" onclick="addNewProduct()">إضافة المنتج للسحابة ➕</button>
-            <button type="button" class="action-btn" onclick="resetStoreProducts()">إعادة تعيين المنتجات الافتراضية 🔄</button>
+            <button type="button" class="submit-btn" style="background:#2f3542; margin-bottom: 10px;" onclick="addNewProduct()">إضافة المنتج للمتجر ➕</button>
+            <button type="button" class="action-btn" onclick="resetStoreProducts()">إعادة تعيين المنتجات الأصلية 🔄</button>
         </div>
 
         <!-- الصفحة الرئيسية: كتالوج المنتجات -->
@@ -471,45 +471,39 @@
     </footer>
 
     <script>
-        const BIN_ID = "6acc05a6ac6210605a28dfe8";
-        const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+        const DATA_VERSION = "v6_with_social";
+        if (localStorage.getItem("store_v") !== DATA_VERSION) {
+            localStorage.removeItem("houri_store_data");
+            localStorage.setItem("store_v", DATA_VERSION);
+        }
 
-        let storeData = {
+        let storeData = JSON.parse(localStorage.getItem('houri_store_data')) || {
             storeName: "Houri Hidaya kids",
             logoUrl: "https://i.postimg.cc/DzMMwF01/706691313-122104797057317972-8513449636848536880-n.jpg",
-            products: []
+            products: [
+                {
+                    id: 1,
+                    title: "Basket Stitch Primark",
+                    price: "3500 دج",
+                    image: "https://i.postimg.cc/MpG5M4hY/Gemini-Generated-Image-4icgj54icgj54icg.jpg",
+                    sizes: "20,21,22,23,24,25,26,27,28,29,30",
+                    desc: "حذاء ستيتش الأصلي للأطفال بجودة عالية ومريحة للقدمين."
+                },
+                {
+                    id: 2,
+                    title: "طقم Stitch & Angel للبنات",
+                    price: "2300 دج",
+                    image: "https://i.postimg.cc/h4y1FMJ0/Gemini-Generated-Image-5vy1om5vy1om5vy1.jpg",
+                    sizes: "2,4,6,8,10 سنوات",
+                    desc: "طقم صيفي راقٍ ومريح جداً للأطفال، مصنوع من قماش قطني عالي الجودة ناعم على بشرة طفلتك. تصميم أنيق ومبهج برسومات شخصيات ديزني المحبوبة."
+                }
+            ]
         };
 
         let currentActiveProduct = null;
 
-        // جلب البيانات من السحابة مباشرة
-        async function loadStoreData() {
-            try {
-                const response = await fetch(API_URL);
-                const data = await response.json();
-                if(data && data.record) {
-                    storeData = data.record;
-                }
-            } catch(e) {
-                console.error("خطأ في جلب البيانات من السحابة", e);
-            }
-            renderStore();
-        }
-
-        // حفظ وتحديث البيانات في السحابة فوراً
-        async function saveData() {
-            try {
-                await fetch(API_URL, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(storeData)
-                });
-                alert('تم التحديث وحفظ التغييرات في السحابة بنجاح لجميع الزبائن! ✨');
-            } catch(e) {
-                alert('حدث خطأ أثناء الحفظ في السحابة، تأكد من الاتصال بالإنترنت.');
-            }
+        function saveData() {
+            localStorage.setItem('houri_store_data', JSON.stringify(storeData));
             renderStore();
         }
 
@@ -518,36 +512,32 @@
             if(urlParams.get('admin') === 'true') {
                 document.getElementById('adminPanel').classList.add('active');
             }
-            loadStoreData();
+            renderStore();
         });
 
         function renderStore() {
-            document.getElementById('headerTitle').innerText = storeData.storeName || "Houri Hidaya kids";
-            if(storeData.logoUrl) document.getElementById('headerLogo').src = storeData.logoUrl;
-            document.getElementById('adminStoreName').value = storeData.storeName || "";
-            document.getElementById('adminLogoInput').value = storeData.logoUrl || "";
+            document.getElementById('headerTitle').innerText = storeData.storeName;
+            document.getElementById('headerLogo').src = storeData.logoUrl;
+            document.getElementById('adminStoreName').value = storeData.storeName;
+            document.getElementById('adminLogoInput').value = storeData.logoUrl;
 
             const grid = document.getElementById('productsGrid');
             grid.innerHTML = '';
 
-            if(storeData.products && storeData.products.length > 0) {
-                storeData.products.forEach((p) => {
-                    grid.innerHTML += `
-                        <div class="grid-card" onclick="openProductDetail(${p.id})">
-                            <img src="${p.image}" alt="${p.title}" class="grid-img">
-                            <div class="grid-info">
-                                <div>
-                                    <div class="grid-title">${p.title}</div>
-                                    <div class="grid-price">${p.price}</div>
-                                </div>
-                                <button class="grid-btn">عرض التفاصيل والطلب 🛒</button>
+            storeData.products.forEach((p) => {
+                grid.innerHTML += `
+                    <div class="grid-card" onclick="openProductDetail(${p.id})">
+                        <img src="${p.image}" alt="${p.title}" class="grid-img">
+                        <div class="grid-info">
+                            <div>
+                                <div class="grid-title">${p.title}</div>
+                                <div class="grid-price">${p.price}</div>
                             </div>
+                            <button class="grid-btn">عرض التفاصيل والطلب 🛒</button>
                         </div>
-                    `;
-                });
-            } else {
-                grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1; padding: 20px;">لا توجد منتجات حالياً.</p>';
-            }
+                    </div>
+                `;
+            });
         }
 
         function showCatalog() {
@@ -569,19 +559,17 @@
 
             const sizeSelect = document.getElementById('selectedSize');
             sizeSelect.innerHTML = '<option value="">اختر المقاس...</option>';
-            if(product.sizes) {
-                const sizesArray = product.sizes.split(',');
-                sizesArray.forEach(s => {
-                    sizeSelect.innerHTML += `<option value="مقاس ${s.trim()}">مقاس ${s.trim()}</option>`;
-                });
-            }
+            const sizesArray = product.sizes.split(',');
+            sizesArray.forEach(s => {
+                sizeSelect.innerHTML += `<option value="مقاس ${s.trim()}">مقاس ${s.trim()}</option>`;
+            });
 
             const urlParams = new URLSearchParams(window.location.search);
             const isAdmin = urlParams.get('admin') === 'true';
             const adminContainer = document.getElementById('adminDeleteContainer');
             if(isAdmin) {
                 const prodIndex = storeData.products.findIndex(p => p.id === productId);
-                adminContainer.innerHTML = `<button class="action-btn" onclick="deleteProduct(${prodIndex})">حذف هذا المنتج من السحابة 🗑️</button>`;
+                adminContainer.innerHTML = `<button class="action-btn" onclick="deleteProduct(${prodIndex})">حذف هذا المنتج 🗑️</button>`;
             } else {
                 adminContainer.innerHTML = '';
             }
@@ -591,12 +579,12 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        document.getElementById('adminStoreName').addEventListener('change', function(e) {
+        document.getElementById('adminStoreName').addEventListener('input', function(e) {
             storeData.storeName = e.target.value;
             saveData();
         });
 
-        document.getElementById('adminLogoInput').addEventListener('change', function(e) {
+        document.getElementById('adminLogoInput').addEventListener('input', function(e) {
             storeData.logoUrl = e.target.value;
             saveData();
         });
@@ -613,8 +601,6 @@
                 return;
             }
 
-            if(!storeData.products) storeData.products = [];
-
             storeData.products.push({ id: Date.now(), title, price, image, sizes, desc });
             saveData();
 
@@ -622,11 +608,12 @@
             document.getElementById('newPrice').value = '';
             document.getElementById('newImage').value = '';
             document.getElementById('newDesc').value = '';
+            alert('تمت إضافة المنتج بنجاح إلى المعرض!');
             showCatalog();
         }
 
         function deleteProduct(index) {
-            if(confirm('هل أنت متأكد من حذف هذا المنتج نهائياً من المتجر؟')) {
+            if(confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
                 storeData.products.splice(index, 1);
                 saveData();
                 showCatalog();
@@ -634,10 +621,9 @@
         }
 
         function resetStoreProducts() {
-            if(confirm('هل تريد تفريغ المتجر بالكامل؟')) {
-                storeData.products = [];
-                saveData();
-                showCatalog();
+            if(confirm('إعادة تعيين كافة المنتجات للوضع الافتراضي؟')) {
+                localStorage.removeItem('houri_store_data');
+                location.reload();
             }
         }
 
